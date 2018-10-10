@@ -59,12 +59,23 @@ function speak() {
     }
 }
 function cmdleer(leerData) {
-    this.a = 0;
-    while (this.a < leerData.length) {
-        if (leerData.substring(this.a,this.a+1) == ";") {
-            learn(leerData.substring(0,this.a),leerData.substring(this.a+1,leerData.length));
-        }
-    this.a += 1;
+    // this.a = 0;
+    // while (this.a < leerData.length) {
+    //     if (leerData.substring(this.a,this.a+1) == ";") {
+    //         learn(leerData.substring(0,this.a),leerData.substring(this.a+1,leerData.length));
+    //     }
+    //     this.a += 1;
+    // }
+    var matchLeerData = leerData.match(/(.*);(.*)/);
+    if (matchLeerData !== null) {
+      if (matchLeerData[1] !== undefined && matchLeerData[1].length >= 1 && matchLeerData[2] !== undefined && matchLeerData[2].length >= 1) {
+        learn(matchLeerData[1], matchLeerData[2]);
+        return("ok, begrepen.");
+      } else {
+        return("vraag of antwoord is niet correct meegegeven.");
+      }
+    } else {
+      return("ongeldige data.");
     }
 }
 
@@ -88,20 +99,30 @@ function cmdfaq(faqTitle) {
 
 bot.on(/(.*)/, function (msg, props) {
     if (props.match[0][0] == "/") {
-        if (props.match[0].substring(0,6) == "/leer ") {
-            cmdleer(props.match[0].substring(6,(props.match[0].length)));
-        } else if (props.match[0].substring(0,9) == "/geleerd") {
-            console.log(questions);
-            console.log(awnsers);
-            bot.sendMessage(msg.from.id, questions.toString());
-            bot.sendMessage(msg.from.id, awnsers.toString());
-        } else if (props.match[0].substring(0,6) == "/start") {
-            bot.sendMessage(msg.from.id, "Hallo, Ik ben Ikke De Bot en ik ben een chatbot. Ik kan een beetje chatten (mijn maker is hier nog mee bezig), maar ik kan ook veel vertellen over het Metis Montesorri Lyceum. Door '/' in te typen worden een paar commandos weergegeven. Met deze commandos kan je meer leren over de school.");
-        } else if (props.match[0].substring(0,4) == "/faq") {
-            bot.sendMessage(msg.from.id, cmdfaq(props.match[0].substring(5,(props.match[0].length))));
-        } else {
-            bot.sendMessage(msg.from.id, "Dat commando ken ik niet. :(");
-        }
+      var matchLeer = props.match[0].match(/\/leer (.*)/);
+      if (matchLeer !== null) {
+          bot.sendMessage(msg.from.id, cmdleer(matchLeer[1]));
+          return;
+      }
+      var matchGeleerd = props.match[0].match(/\/geleerd/);
+      if (matchGeleerd !== null) {
+          console.log(questions);
+          console.log(awnsers);
+          bot.sendMessage(msg.from.id, questions.toString());
+          bot.sendMessage(msg.from.id, awnsers.toString());
+          return;
+      }
+      var matchStart = props.match[0].match(/\/start/);
+      if (matchStart !== null) {
+          bot.sendMessage(msg.from.id, "Hallo, Ik ben Ikke De Bot en ik ben een chatbot. Ik kan een beetje chatten (mijn maker is hier nog mee bezig), maar ik kan ook veel vertellen over het Metis Montesorri Lyceum. Door '/' in te typen worden een paar commandos weergegeven. Met deze commandos kan je meer leren over de school.");
+          return;
+      }
+      var matchFaq = props.match[0].match(/\/faq (.*)/);
+      if (matchFaq !== null) {
+          bot.sendMessage(msg.from.id, cmdfaq(matchFaq[1]));
+          return;
+      }
+      bot.sendMessage(msg.from.id, "Dat commando ken ik niet. :(");
     } else {
         lastQ = props.match[0];
         learn(lastA, lastQ);
