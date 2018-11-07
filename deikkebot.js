@@ -57,26 +57,9 @@ function speak() {
     if (possibleAwnsers.length > 0) {
         lastA = possibleAwnsers[random(0,possibleAwnsers.length)];
     } else {
-        // speakAttempt2(lastQ);
         lastA = geenidees[random(0,geenidees.length)];
     }
 }
-
-// function speakAttempt2(QToAnswer) {
-//     lastA == "";
-//     var QHasGreeting = false;
-//     for (var i = 0; i < greetings.length; i ++) {
-//       console.log("/"+greetings[i]+"/");
-//       if (QToAnswer.match("/"+greetings[i]+"/", "i")) {
-//         QHasGreeting = true
-//         break;
-//       }
-//     }
-//     console.log(QHasGreeting);
-//     if (QHasGreeting) {
-//       lastA += greetings[random(0,greetings.length)];
-//     }
-// }
 
 function cmdleer(leerData) {
     var matchLeerData = leerData.match(/(.*);(.*)/);
