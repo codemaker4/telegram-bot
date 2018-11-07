@@ -2,8 +2,12 @@ var lastQ;
 var lastA;
 var questions = ["ben jij een robot?", "hoe heet jij?", "hoi", "hallo", "hou oud ben jij?", "wat vind je lekker?"];
 var awnsers = ["ja", "ikke", "hallo", "hoi", "dat weet ik niet", "electriciteit"];
+
+// var greetings = ["hoi", "hallo", "ook hallo", "gegroet"];
 var geenidees = ["ehm", "ik begrijp je niet","op die vraag heb ik geen antwoord", "...", "doe /leer VRAAG;ANTWOORD om mij iets te leren"];
+
 var possibleAwnsers = [];
+
 var faqTitles = ["Wat is de Coderclass?", "Is de Coderclass een normale opleiding op h/v niveau?", "Waar komen die 5 lesuren voor de Coderclass vandaan?", "Hoe houdt de Coderclass rekening met verschillen tussen leerlingen?", "Wie kunnen zich aanmelden voor de Coderclass?", "Wanneer is iemand geschikt voor de Coderclass?", "Als achteraf blijkt dat de Coderclass toch niet zo’n goede keuze was, kun je dan ook een overstap maken naar een reguliere havo- of vwo-klas?", "Kunnen zij-instromers , leerlingen van een andere h/v school, zich ook aanmelden voor de Coderclass?", "Kunnen leerlingen een bezoek brengen aan de Coderclass?", "Masterclass", "Meeloopdag", "Wat is het verschil tussen de Coderclass en het Technasium?"];
 var faqContents = ["De Coderclass is een opleiding op havo en vwo (h/v) niveau die vanaf het schooljaar 2016-2017 is gestart op het MML. In de Coderclass krijgen geïnteresseerde en gemotiveerde leerlingen de kans om zich te bekwamen op diverse onderdelen van de informatica waarbij het leren programmeren centraal staat.", "Tijdens de opleiding krijgen leerlingen alle vakken die wettelijk gelden voor havo en vwo. Daarnaast krijgen ze 5 uur in de week les in informatica.",
 "Die vijf lesuren zijn deels in plaats van keuzewerktijd en deels als extra uren die opgenomen zijn in het rooster.",
@@ -45,27 +49,36 @@ function random(min, max) {
 
 function speak() {
     possibleAwnsers = [];
-    this.a = 0;
-    while (this.a < questions.length) {
-        if (questions[this.a] == lastQ) {
-            possibleAwnsers[possibleAwnsers.length] = awnsers[this.a];
+    for (var i = 0; i < questions.length; i ++) {
+        if (lastQ.match(new RegExp(questions[i], "i"))) {
+            possibleAwnsers[possibleAwnsers.length] = awnsers[i];
         }
-        this.a += 1;
     }
     if (possibleAwnsers.length > 0) {
         lastA = possibleAwnsers[random(0,possibleAwnsers.length)];
     } else {
+        // speakAttempt2(lastQ);
         lastA = geenidees[random(0,geenidees.length)];
     }
 }
+
+// function speakAttempt2(QToAnswer) {
+//     lastA == "";
+//     var QHasGreeting = false;
+//     for (var i = 0; i < greetings.length; i ++) {
+//       console.log("/"+greetings[i]+"/");
+//       if (QToAnswer.match("/"+greetings[i]+"/", "i")) {
+//         QHasGreeting = true
+//         break;
+//       }
+//     }
+//     console.log(QHasGreeting);
+//     if (QHasGreeting) {
+//       lastA += greetings[random(0,greetings.length)];
+//     }
+// }
+
 function cmdleer(leerData) {
-    // this.a = 0;
-    // while (this.a < leerData.length) {
-    //     if (leerData.substring(this.a,this.a+1) == ";") {
-    //         learn(leerData.substring(0,this.a),leerData.substring(this.a+1,leerData.length));
-    //     }
-    //     this.a += 1;
-    // }
     var matchLeerData = leerData.match(/(.*);(.*)/);
     if (matchLeerData !== null) {
       if (matchLeerData[1] !== undefined && matchLeerData[1].length >= 1 && matchLeerData[2] !== undefined && matchLeerData[2].length >= 1) {
@@ -104,16 +117,14 @@ bot.on(/(.*)/, function (msg, props) {
           bot.sendMessage(msg.from.id, cmdleer(matchLeer[1]));
           return;
       }
-      var matchGeleerd = props.match[0].match(/\/geleerd/);
-      if (matchGeleerd !== null) {
+      if (props.match[0].match(/\/geleerd/)) {
           console.log(questions);
           console.log(awnsers);
           bot.sendMessage(msg.from.id, questions.toString());
           bot.sendMessage(msg.from.id, awnsers.toString());
           return;
       }
-      var matchStart = props.match[0].match(/\/start/);
-      if (matchStart !== null) {
+      if (props.match[0].match(/\/start/)) {
           bot.sendMessage(msg.from.id, "Hallo, Ik ben Ikke De Bot en ik ben een chatbot. Ik kan een beetje chatten (mijn maker is hier nog mee bezig), maar ik kan ook veel vertellen over het Metis Montesorri Lyceum. Door '/' in te typen worden een paar commandos weergegeven. Met deze commandos kan je meer leren over de school.");
           return;
       }
